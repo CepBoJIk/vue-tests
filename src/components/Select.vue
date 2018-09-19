@@ -1,0 +1,114 @@
+<template>
+  <div class='select-wrapper'>
+    <div class='select' v-on:click='toggleView'>
+      {{selected}}
+    </div>
+    <ul class='options' v-bind:class="viewList ? '' : 'hidden'">
+      <li v-for='(item, index) in data' :key='index' @click='changeSelected(item)'>
+        {{item}}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Select',
+  props: [
+    'data',
+    'stateKey',
+  ],
+  data() {
+    return {
+      viewList: false,
+      selected: this.data[0],
+    };
+  },
+  methods: {
+    toggleView() {
+      this.viewList = !this.viewList;
+    },
+    changeSelected(item) {
+      this.selected = item,
+      this.viewList = false,
+
+      this.$emit('change-state-value', item, this.stateKey);
+    },
+  },
+  created() {
+    this.$emit('change-state-value', this.data[0], this.stateKey);
+  },
+};
+</script>
+
+<style scoped>
+  @media screen and (max-width: 680px) {
+  .select-wrapper {
+    flex: 0 0 100%;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+}
+
+.select-wrapper {
+  position: relative;
+  flex: 1 0 auto;
+  display: inline-block;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 25px;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+.select-wrapper .select {
+  position: relative;
+  border-bottom: 1px solid #0366D6;
+  padding: 7px 15px 7px 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+}
+
+.select-wrapper .select::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -4px;
+  width: 0;
+  height: 0;
+  border-top: 9px solid #000;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.select-wrapper .options {
+  min-width: 100%;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #F1F8FE;
+  z-index: 99;
+}
+
+.select-wrapper .options.hidden {
+  display: none;
+}
+
+.select-wrapper .options li {
+  padding: 3px 7px;
+  border-bottom: 1px solid #E1E4E8;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+}
+
+.select-wrapper .options li:last-child {
+  border-bottom: 0;
+}
+
+.select-wrapper .options li:hover {
+  background-color: #E1E4E8;
+}
+</style>
